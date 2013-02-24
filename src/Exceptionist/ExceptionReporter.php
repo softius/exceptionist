@@ -6,17 +6,25 @@ class ExceptionReporter
 {
 	protected $vars;
 	protected $template;
+
+	private $templates;
+
+	const TEMPLATE_DETAILED = 0;
 			
 	public function __construct()
 	{
 		$this->vars = array();
 		$this->template = null;
+
+		$this->templates = array(
+			dirname(dirname(__DIR__)) . '/templates/default.php',
+		);
 	}
 	
 	public function getTemplate()
 	{
 		if (null == $this->template) {
-			return dirname(dirname(__DIR__)) .'/templates/default.php';
+			return $this->templates[ExceptionReporter::TEMPLATE_DETAILED];
 		}
 		
 		return $this->template;
@@ -24,7 +32,15 @@ class ExceptionReporter
 	
 	public function setTemplate($template)
 	{
-		$this->template = $template;
+		if (is_int($template)) {
+			if (!array_key_exists($template, $this->templates)) {
+				throw new \Exception('Template not found. Perhaps you should provide the full path?');
+			} else {
+				$this->templates[$template];
+			}
+		} else {
+			$this->template = $template;
+		}
 	}
 
 	public function setVar($name, $value) 
