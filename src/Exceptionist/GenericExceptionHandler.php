@@ -18,10 +18,15 @@ class GenericExceptionHandler implements ExceptionHandler
 		$this->options = array_merge(
 			array(
 				'dir_prefix' => null,
-				'lines' => 5
+				'lines' => 5,
+				'template_script' => null,
 			),
 			$options
 		);
+
+		if (null != $this->options['template_script']) {
+			$this->getReporter()->setTemplate($this->options['template_script']);
+		}
 	}
 	
 	/**
