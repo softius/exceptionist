@@ -17,8 +17,8 @@ class GenericExceptionHandler implements ExceptionHandler
 	{
 		$this->options = array_merge(
 			array(
-				'dir_prefix' => null,
-				'lines' => 5,
+				'project_root' => null,
+				'code_block_length' => 5,
 				'template_script' => null,
 			),
 			$options
@@ -81,7 +81,7 @@ class GenericExceptionHandler implements ExceptionHandler
 		$reader->setFile($exception->getFile());
 		$this->getReporter()->setVar(
 			'exception_codeblock',
-			$reader->extract($exception->getLine()-$this->options['lines'], $exception->getLine()+$this->options['lines'])
+			$reader->extract($exception->getLine()-$this->options['code_block_length'], $exception->getLine()+$this->options['code_block_length'])
 		);
 
 		// Variables for exception stack trace
@@ -91,7 +91,7 @@ class GenericExceptionHandler implements ExceptionHandler
 			$trace[] = array(
 				'exception_file' => $this->minimizeFilepath($trace_entry['file']),
 				'exception_fileline' => $trace_entry['line']-1,
-				'exception_codeblock' => $reader->extract($trace_entry['line']-$this->options['lines'], $trace_entry['line']+$this->options['lines']),
+				'exception_codeblock' => $reader->extract($trace_entry['line']-$this->options['code_block_length'], $trace_entry['line']+$this->options['code_block_length']),
 			);
 		}
 
@@ -103,6 +103,6 @@ class GenericExceptionHandler implements ExceptionHandler
 
 	protected function minimizeFilepath($file)
 	{
-		return str_replace($this->options['dir_prefix'], null, $file);
+		return str_replace($this->options['project_root'], null, $file);
 	}
 }
