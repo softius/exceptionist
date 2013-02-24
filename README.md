@@ -20,12 +20,20 @@ and install via composer:
 	php composer.phar install
 ```
 
-Then, you will need to setup the `DefaultExceptionHandler`. You are adviced to setup the following as early as possible in your script.
+Then, you will need to setup `GenericExceptionHandler`. You are adviced to setup the following as early as possible in your script.
 
 ``` PHP
-set_exception_handler(array(new \Exceptionist\DefaultExceptionHandler(array('dir_prefix' => 'project_root_dir')), 'handle'));	
+set_exception_handler(array(new \Exceptionist\GenericExceptionHandler(array('project_root' => 'project_root_dir')), 'handle'));	
 ```
 
+Configuration
+-------------
+
+`GenericExceptionHandler` accepts a configuration array with the following options:
+
+* `project_root`: defines the project root directory, default is `null`. 
+* `template_script`: full path of the template to be used. The following built-in templates are available: `\Exceptionist\ExceptionReporter::TEMPLATE_DETAILED`
+* `code_block_length`: number of lines to be displayed in each code block, default is 10. 
 
 How it works
 ------------
