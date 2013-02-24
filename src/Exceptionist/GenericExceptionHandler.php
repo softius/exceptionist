@@ -18,7 +18,7 @@ class GenericExceptionHandler implements ExceptionHandler
 		$this->options = array_merge(
 			array(
 				'project_root' => null,
-				'code_block_length' => 5,
+				'code_block_length' => 10,
 				'template_script' => null,
 			),
 			$options
@@ -81,7 +81,7 @@ class GenericExceptionHandler implements ExceptionHandler
 		$reader->setFile($exception->getFile());
 		$this->getReporter()->setVar(
 			'exception_codeblock',
-			$reader->extract($exception->getLine()-$this->options['code_block_length'], $exception->getLine()+$this->options['code_block_length'])
+			$reader->extract($exception->getLine()-$this->options['code_block_length']/2, $exception->getLine()+$this->options['code_block_length']/2)
 		);
 
 		// Variables for exception stack trace
@@ -91,7 +91,7 @@ class GenericExceptionHandler implements ExceptionHandler
 			$trace[] = array(
 				'exception_file' => $this->minimizeFilepath($trace_entry['file']),
 				'exception_fileline' => $trace_entry['line']-1,
-				'exception_codeblock' => $reader->extract($trace_entry['line']-$this->options['code_block_length'], $trace_entry['line']+$this->options['code_block_length']),
+				'exception_codeblock' => $reader->extract($trace_entry['line']-$this->options['code_block_length']/2, $trace_entry['line']+$this->options['code_block_length']/2),
 			);
 		}
 

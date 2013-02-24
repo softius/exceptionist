@@ -33,6 +33,8 @@ class PhpReader
 	public function extract($from, $to)
 	{
 		// @todo need a better way to achieve this
-		return array_slice(file($this->getFile()), $from, $to-$from, true);
+		$from = max($from, 1);
+		$length = max($to-$from, 0);
+		return array_slice(file($this->getFile()), $from, $length, true);
 	}
 }
