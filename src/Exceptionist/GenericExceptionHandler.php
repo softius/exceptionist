@@ -3,9 +3,9 @@
 namespace Exceptionist;
 
 /**
- * Default implementation of ExceptionHandler
+ * Generic implementation of ExceptionHandler
  */
-class DefaultExceptionHandler implements ExceptionHandler
+class GenericExceptionHandler implements ExceptionHandler
 {
 	/**
 	 * Exception reporter to be used when generating the report
@@ -50,7 +50,7 @@ class DefaultExceptionHandler implements ExceptionHandler
 	 * Provides a handler for exceptions, to be used with set_exception_handler
 	 * It displays the report, as returned by getReport
 	 * @param \Exception $exception any exception
-	 * @see \Exceptionist\DefaultExceptionHandler::getReport()
+	 * @see \Exceptionist\GenericExceptionHandler::getReport()
 	 */
 	public function handle(\Exception $exception)
 	{
