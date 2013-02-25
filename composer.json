@@ -21,6 +21,9 @@
   "require-dev": {
     "phpunit/phpunit": "3.*"
   },
+  "suggest": {
+    "eloquent/asplode": "1.*"
+  },
   "autoload": {
     "psr-0": {
       "": "src/"
