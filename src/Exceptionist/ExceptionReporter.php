@@ -10,6 +10,7 @@ class ExceptionReporter
 	private $templates;
 
 	const TEMPLATE_DETAILED = 0;
+	const TEMPLATE_MINIMAL = 1;
 			
 	public function __construct()
 	{
@@ -18,6 +19,7 @@ class ExceptionReporter
 
 		$this->templates = array(
 			dirname(dirname(__DIR__)) . '/templates/default.php',
+			dirname(dirname(__DIR__)) . '/templates/minimal.php',
 		);
 	}
 	
@@ -36,7 +38,7 @@ class ExceptionReporter
 			if (!array_key_exists($template, $this->templates)) {
 				throw new \Exception('Template not found. Perhaps you should provide the full path?');
 			} else {
-				$this->templates[$template];
+				$this->template = $this->templates[$template];
 			}
 		} else {
 			$this->template = $template;
