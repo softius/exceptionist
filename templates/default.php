@@ -67,7 +67,7 @@
 	<body>
 		<div id="exception-header">
 			<h1><?php echo $exception_class .' '. $exception_hashcode; ?></h1>
-			<h3><?php echo $exception_message ?></h3>
+			<h3><?php echo strip_tags($exception_message); ?></h3>
 		</div>
 		<?php $exception_count = count($exception_trace); ?>
 		<div class="code-block primary-code-block">

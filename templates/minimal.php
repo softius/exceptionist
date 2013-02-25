@@ -32,7 +32,7 @@
 	<body>
 		<div id="exception-header">
 			<h1><?php echo $exception_class .' '. $exception_hashcode; ?></h1>
-			<h2><?php echo $exception_message ?></h2>
+			<h2><?php echo strip_tags($exception_message); ?></h2>
 		</div>
 	</body>
 </html>

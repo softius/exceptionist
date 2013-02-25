@@ -87,6 +87,11 @@ class GenericExceptionHandler implements ExceptionHandler
 		// Variables for exception stack trace
 		$trace = array();
 		foreach ($exception->getTrace() as $trace_entry) {
+			// While not the best option, ignore trace entries with no file
+			if (!array_key_exists('file', $trace_entry) || !array_key_exists('line', $trace_entry)) {
+				continue;
+			}
+
 			$reader->setFile($trace_entry['file']);
 			$trace[] = array(
 				'exception_file' => $this->minimizeFilepath($trace_entry['file']),
