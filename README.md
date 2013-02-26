@@ -10,7 +10,7 @@ Exceptionist is available on packagist. All you need is to add the following lin
 ``` JSON
 	{
     	"require": {
-        	"softius/exceptionist": "*@dev"
+        	"softius/exceptionist": "0.1"
 	    }
 	}
 ```
