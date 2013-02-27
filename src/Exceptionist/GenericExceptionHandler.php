@@ -68,6 +68,15 @@ class GenericExceptionHandler implements ExceptionHandler
 	 */
 	public function getReport(\Exception $exception)
 	{
+		$this->prepareExceptionSource($exception);
+		$this->prepareStackTrace($exception);
+		
+		// renders and returns report content
+		return $this->getReporter()->getContent();
+	}
+
+	private function prepareExceptionSource($exception)
+	{
 		$reader = new PhpReader();
 		
 		// Variables for exception source
@@ -83,27 +92,70 @@ class GenericExceptionHandler implements ExceptionHandler
 			'exception_codeblock',
 			$reader->extract($exception->getLine()-$this->options['code_block_length']/2, $exception->getLine()+$this->options['code_block_length']/2)
 		);
+	}
+
+	private function prepareStackTrace($exception)
+	{
+		$reader = new PhpReader();
 
 		// Variables for exception stack trace
-		$trace = array();
+		$stacktrace = array();
 		foreach ($exception->getTrace() as $trace_entry) {
-			// While not the best option, ignore trace entries with no file
-			if (!array_key_exists('file', $trace_entry) || !array_key_exists('line', $trace_entry)) {
-				continue;
+			$item = array();
+
+			if (array_key_exists('file', $trace_entry) && array_key_exists('line', $trace_entry)) {
+				$reader->setFile($trace_entry['file']);
+				$item = array(
+					'exception_file' => $this->minimizeFilepath($trace_entry['file']),
+					'exception_fileline' => $trace_entry['line']-1,
+					'exception_codeblock' => $reader->extract($trace_entry['line']-$this->options['code_block_length']/2, $trace_entry['line']+$this->options['code_block_length']/2),
+				);
+			}
+			
+			// Class::Method Vs Function
+			if (array_key_exists('class', $trace_entry)) {
+				$item['exception_call_signature'] = $trace_entry['class'] . $trace_entry['type'] . $trace_entry['function'] . '()';
+			} elseif(array_key_exists('function', $trace_entry)) {
+				$item['exception_call_signature'] = $trace_entry['function'] . '()';
+			} else {
+				$item['exception_call_signature'] = null;
 			}
 
-			$reader->setFile($trace_entry['file']);
-			$trace[] = array(
-				'exception_file' => $this->minimizeFilepath($trace_entry['file']),
-				'exception_fileline' => $trace_entry['line']-1,
-				'exception_codeblock' => $reader->extract($trace_entry['line']-$this->options['code_block_length']/2, $trace_entry['line']+$this->options['code_block_length']/2),
+			$item['exception_args'] = $this->prepareArguments($trace_entry);
+
+			$stacktrace[] = $item;
+		}
+
+		$this->getReporter()->setVar('exception_trace', $stacktrace);
+	}
+
+	private function prepareArguments($trace_item)
+	{
+		$reflection_args = null;
+		if (class_exists('ReflectionMethod')) {
+			if (empty($trace_item['class'])) {
+				$reflection = new \ReflectionFunction($trace_item['function']);
+			} else {
+				$reflection = new \ReflectionMethod($trace_item['class'], $trace_item['function']);
+			}
+			$reflection_args = $reflection->getParameters();
+		}
+
+		$args = array();
+		foreach ($trace_item['args'] as $k => $trace_arg) {
+			if (is_object($trace_arg)) {
+				$value = get_class($trace_arg);
+			} else {
+				$value = $trace_arg;
+			}
+
+			$args[] = array(
+				'name' => (null !== $reflection_args && isset($reflection_args[$k])) ? $reflection_args[$k]->getName() : null,
+				'value' => $value,
 			);
 		}
 
-		$this->getReporter()->setVar('exception_trace', $trace);
-		
-		// renders and returns report content
-		return $this->getReporter()->getContent();
+		return $args;
 	}
 
 	protected function minimizeFilepath($file)
