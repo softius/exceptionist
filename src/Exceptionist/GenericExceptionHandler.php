@@ -17,7 +17,7 @@ class GenericExceptionHandler implements ExceptionHandler
 	{
 		$this->options = array_merge(
 			array(
-				'project_root' => null,
+				'project_root' => dirname(dirname(__DIR__)),
 				'code_block_length' => 10,
 				'template_script' => null,
 			),
