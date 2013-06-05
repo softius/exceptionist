@@ -111,17 +111,19 @@ class ReportBuilder
 		}
 
 		$args = array();
-		foreach ($trace_item['args'] as $k => $trace_arg) {
-			if (is_object($trace_arg)) {
-				$value = get_class($trace_arg);
-			} else {
-				$value = $trace_arg;
-			}
+		if (array_key_exists('args', $trace_item)) {
+			foreach ($trace_item['args'] as $k => $trace_arg) {
+				if (is_object($trace_arg)) {
+					$value = get_class($trace_arg);
+				} else {
+					$value = $trace_arg;
+				}
 
-			$args[] = array(
-				'name' => (null !== $reflection_args && isset($reflection_args[$k])) ? $reflection_args[$k]->getName() : null,
-				'value' => $value,
-			);
+				$args[] = array(
+					'name' => (null !== $reflection_args && isset($reflection_args[$k])) ? $reflection_args[$k]->getName() : null,
+					'value' => $value,
+				);
+			}
 		}
 
 		return $args;
