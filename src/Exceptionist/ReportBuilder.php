@@ -97,12 +97,17 @@ class ReportBuilder
 	{
 		$reflection_args = null;
 		if (class_exists('ReflectionMethod')) {
-			if (empty($trace_item['class'])) {
-				$reflection = new \ReflectionFunction($trace_item['function']);
-			} else {
-				$reflection = new \ReflectionMethod($trace_item['class'], $trace_item['function']);
+			try {
+				if (empty($trace_item['class'])) {
+					$reflection = new \ReflectionFunction($trace_item['function']);
+				} else {
+					$reflection = new \ReflectionMethod($trace_item['class'], $trace_item['function']);
+				}
+				
+				$reflection_args = $reflection->getParameters();
+			} catch (\Exception $e) {
+				$reflection_args = null;
 			}
-			$reflection_args = $reflection->getParameters();
 		}
 
 		$args = array();
